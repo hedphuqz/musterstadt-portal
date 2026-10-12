@@ -44,11 +44,10 @@ public class DogRegistrationDao {
         return em.createQuery(
                 "SELECT d FROM DogRegistration d JOIN FETCH d.citizen " +
                 "WHERE d.citizen.id = :cid " +
-                "  AND (LOWER(d.dogName) LIKE LOWER(:term) " +
-                "    OR LOWER(d.breed)   LIKE LOWER(:term)) " +
+                "  AND (LOWER(d.dogName) LIKE LOWER('%" + searchTerm + "%') " +
+                "    OR LOWER(d.breed)   LIKE LOWER('%" + searchTerm + "%')) " +
                 "ORDER BY d.dogName")
                 .setParameter("cid", citizenId)
-                .setParameter("term", "%" + searchTerm + "%")
                 .getResultList();
     }
 
