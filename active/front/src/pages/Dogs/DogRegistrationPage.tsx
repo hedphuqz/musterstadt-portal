@@ -29,6 +29,7 @@ import {
 } from '@carbon/react';
 import { User, Send, Reset, Search as SearchIcon } from '@carbon/react/icons';
 import { dogService } from '@/services/dogService';
+import http from '@/services/http';
 import { useAuth } from '@/context/AuthContext';
 import { LoadingState } from '@/components/common/LoadingState';
 import {
@@ -114,7 +115,7 @@ export default function DogRegistrationPage() {
     setError(null);
     setPage(1);
     try {
-      const data = await dogService.getRegistrations(citizenId);
+      const data = (await http.get<DogRegistration[]>(`/dogs/${citizenId}`)).data;
       setRegistrations(data);
     } catch (e) {
       setError((e as ApiError).error ?? 'Fehler beim Zurücksetzen der Suche.');
@@ -223,7 +224,7 @@ export default function DogRegistrationPage() {
         <InlineNotification
           kind="success"
           title="Erfolg:"
-          subtitle={success}
+          subtitle={<span dangerouslySetInnerHTML={{ __html: success }} />}
           lowContrast
           onCloseButtonClick={() => setSuccess(null)}
         />

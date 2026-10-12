@@ -31,6 +31,9 @@ public class DogResource {
     @Inject
     DogRegistrationService dogRegistrationService;
 
+    @Inject
+    com.musterstadt.dao.DogRegistrationDao dogRegistrationDao;
+
     // ── DTOs ────────────────────────────────────────────────────────────────
 
     public static class RegisterDogRequest {
@@ -51,7 +54,7 @@ public class DogResource {
     @Operation(summary = "List all dog registrations for a citizen",
                description = "Returns all registered dogs belonging to the given citizen.")
     public Response getRegistrations(@PathParam("citizenId") Long citizenId) {
-        List<DogRegistration> regs = dogRegistrationService.getAllRegistrations(citizenId);
+        List<DogRegistration> regs = dogRegistrationDao.findByCitizenId(citizenId);
         List<DogRegistrationDto> dtos = regs.stream()
                 .map(DogRegistrationDto::from)
                 .collect(Collectors.toList());
