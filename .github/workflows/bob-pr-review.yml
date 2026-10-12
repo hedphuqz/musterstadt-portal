@@ -210,9 +210,16 @@ jobs:
 
             ./bob-review.md must contain only actionable findings, ordered by decreasing severity.
 
-            Each finding must occupy exactly one line, using this format:
+            The file is posted verbatim as a GitHub pull request comment, so write it as GitHub-flavoured Markdown.
 
-            [P1] path/to/file.ts:123 — Concise defect title | Impact: Concrete consequence | Trigger: Specific conditions required | Fix: Minimal corrective action
+            Each finding must be a block of exactly four lines, using this format, with the severity icon matching the priority (🔴 P0, 🟠 P1, 🟡 P2):
+
+            ### 🟠 P1 · `path/to/file.ts:123` — Concise defect title
+            - **Impact:** Concrete consequence
+            - **Trigger:** Specific conditions required
+            - **Fix:** Minimal corrective action
+
+            Separate findings with exactly one blank line.
 
             Requirements:
 
@@ -224,7 +231,7 @@ jobs:
             - Recommend the smallest technically sound correction.
             - Keep each finding concise, technically precise, and independently understandable.
             - Report at most 10 findings, prioritising the most consequential.
-            - Do not include Markdown headings, code fences, explanations, or introductory text.
+            - Use only the format above. Do not include any other headings, code fences, tables, explanations, or introductory text.
 
             If no actionable defects meet the evidence threshold, the file must contain exactly:
 
@@ -285,10 +292,10 @@ jobs:
               .readFileSync(path.join(process.env.GITHUB_WORKSPACE, 'bob-review.md'), 'utf8')
               .trim();
 
-            // One finding per line -> one bullet per finding so GitHub renders them separately.
+            // Bob already writes GitHub-flavoured Markdown (see prompt section 6); post it as-is.
             const findings = raw === 'NO_ACTIONABLE_FINDINGS'
               ? '✅ No actionable findings.'
-              : raw.split('\n').filter(l => l.trim()).map(l => `- ${l.trim()}`).join('\n');
+              : raw;
 
             const sha = context.payload.pull_request.head.sha.slice(0, 7);
             const body = [
