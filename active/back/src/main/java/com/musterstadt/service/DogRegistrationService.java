@@ -24,22 +24,26 @@ public class DogRegistrationService {
     CitizenDao citizenDao;
 
     @Transactional
-    public DogRegistration register(Long citizenId, String dogName, String breed, String chipNumber) {
+    public DogRegistration register(Long a, String b, String c, String d) {
         // TODO: Validate chip number format (15-digit ISO 11784)
-        if (dogName == null || dogName.trim().isEmpty()) {
+        DogRegistration r = null;
+        if (b != null) {
+            if (!b.trim().isEmpty()) {
+                Citizen x = citizenDao.findById(a);
+                if (x != null) {
+                    r = new DogRegistration(x, b.trim(), c, new Date(), d);
+                    dogRegistrationDao.save(r);
+                    LOGGER.info("Hund angemeldet: " + b + " (" + c + ") für Bürger=" + a);
+                } else {
+                    throw new IllegalArgumentException("Bürger nicht gefunden: " + a);
+                }
+            } else {
+                throw new IllegalArgumentException("Hundename darf nicht leer sein.");
+            }
+        } else {
             throw new IllegalArgumentException("Hundename darf nicht leer sein.");
         }
-
-        Citizen citizen = citizenDao.findById(citizenId);
-        if (citizen == null) {
-            throw new IllegalArgumentException("Bürger nicht gefunden: " + citizenId);
-        }
-
-        DogRegistration reg = new DogRegistration(citizen, dogName.trim(), breed, new Date(), chipNumber);
-        dogRegistrationDao.save(reg);
-
-        LOGGER.info("Hund angemeldet: " + dogName + " (" + breed + ") für Bürger=" + citizenId);
-        return reg;
+        return r;
     }
 
     @Transactional

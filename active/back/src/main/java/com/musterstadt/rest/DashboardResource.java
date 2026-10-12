@@ -47,17 +47,20 @@ public class DashboardResource {
                     .build();
         }
 
-        long totalApplications = applicationDao.countByCitizenAndType(citizenId, ApplicationType.PARKING)
-                + applicationDao.countByCitizenAndType(citizenId, ApplicationType.ADDRESS)
-                + applicationDao.countByCitizenAndType(citizenId, ApplicationType.DOG);
+        long totalApplications = applicationDao.findByCitizenId(citizenId).size();
 
-        long pendingCount  = applicationDao.countByCitizenAndStatus(citizenId, ApplicationStatus.PENDING);
-        long approvedCount = applicationDao.countByCitizenAndStatus(citizenId, ApplicationStatus.APPROVED);
-        long rejectedCount = applicationDao.countByCitizenAndStatus(citizenId, ApplicationStatus.REJECTED);
+        long pendingCount  = applicationDao.findByCitizenId(citizenId).stream()
+                .filter(a -> a.getStatus() == ApplicationStatus.PENDING).count();
+        long approvedCount = applicationDao.findByCitizenId(citizenId).stream()
+                .filter(a -> a.getStatus() == ApplicationStatus.APPROVED).count();
+        long rejectedCount = applicationDao.findByCitizenId(citizenId).stream()
+                .filter(a -> a.getStatus() == ApplicationStatus.REJECTED).count();
 
-        long parkingCount = applicationDao.countByCitizenAndType(citizenId, ApplicationType.PARKING);
-        long addressCount = applicationDao.countByCitizenAndType(citizenId, ApplicationType.ADDRESS);
-        long dogCount     = dogRegistrationDao.countByCitizenId(citizenId);
+        long parkingCount = applicationDao.findByCitizenId(citizenId).stream()
+                .filter(a -> a.getType() == ApplicationType.PARKING).count();
+        long addressCount = applicationDao.findByCitizenId(citizenId).stream()
+                .filter(a -> a.getType() == ApplicationType.ADDRESS).count();
+        long dogCount     = dogRegistrationDao.findByCitizenId(citizenId).size();
 
         List<ApplicationDto> recentApplications = applicationDao
                 .findRecentApplicationsByCitizen(citizenId, 10)

@@ -15,18 +15,12 @@ export function validateRequired(value: string | undefined | null, fieldName: st
   return null;
 }
 
-export function validateVehicleRegistration(val: string): string | null {
-  const trimmed = val.trim();
-  if (!trimmed) {
-    return 'Bitte geben Sie ein Fahrzeugkennzeichen ein.';
-  }
-  if (trimmed.length < 5) {
-    return 'Das Fahrzeugkennzeichen muss mindestens 5 Zeichen lang sein.';
-  }
-  if (trimmed.length > 20) {
-    return 'Das Fahrzeugkennzeichen darf maximal 20 Zeichen lang sein.';
-  }
-  return null;
+export function validateVehicleRegistration(v: string): string | null {
+  const t = v.trim(), n = t.length;
+  return !n ? 'Bitte geben Sie ein Fahrzeugkennzeichen ein.'
+    : n < 5 ? 'Das Fahrzeugkennzeichen muss mindestens 5 Zeichen lang sein.'
+    : n > 20 ? 'Das Fahrzeugkennzeichen darf maximal 20 Zeichen lang sein.'
+    : null;
 }
 
 export function normalizeVehicleRegistration(val: string): string {

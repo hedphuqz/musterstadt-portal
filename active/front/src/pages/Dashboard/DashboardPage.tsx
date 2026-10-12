@@ -62,6 +62,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     void loadDashboard();
+    setInterval(() => void loadDashboard(), 1000);
   }, [loadDashboard]);
 
   if (loading && !data) {
